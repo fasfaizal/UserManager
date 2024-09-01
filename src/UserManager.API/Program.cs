@@ -1,6 +1,11 @@
+using UserManager.Repo.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//Add Db Context
+builder.Services.AddDBService(builder.Configuration.GetConnectionString("DbConnectionString"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
