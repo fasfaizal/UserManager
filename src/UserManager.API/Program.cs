@@ -1,8 +1,15 @@
+using UserManager.Common.Interfaces.Repos;
+using UserManager.Common.Interfaces.Services;
 using UserManager.Repo.Extensions;
+using UserManager.Repo.Repos;
+using UserManager.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IUsersRepo, UsersRepo>();
+builder.Services.AddSingleton<IHashService, HashService>();
 
 //Add Db Context
 builder.Services.AddDBService(builder.Configuration.GetConnectionString("DbConnectionString"));

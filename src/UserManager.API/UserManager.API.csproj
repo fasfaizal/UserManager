@@ -16,11 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\UserManager.Repo\UserManager.Repo.csproj" />
+    <ProjectReference Include="..\UserManager.Services\UserManager.Services.csproj" />
   </ItemGroup>
 
 </Project>

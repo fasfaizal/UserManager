@@ -10,7 +10,7 @@ namespace UserManager.Repo.Entities
         [MaxLength(100)]
         public string Username { get; set; }
         [Required]
-        [MaxLength(255)]
+        [MaxLength(100)]
         public string Email { get; set; }
         [Required]
         public byte[] PasswordHash { get; set; }
