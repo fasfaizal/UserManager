@@ -12,6 +12,11 @@ namespace UserManager.Repo.Repos
         {
             _dbContext = dbContext;
         }
+
+        /// <summary>
+        /// Adds a new user to the database and saves the changes asynchronously.
+        /// </summary>
+        /// <param name="user">The user object to be added to the database.</param>
         public async Task AddAsync(User user)
         {
             await _dbContext.Users.AddAsync(user);

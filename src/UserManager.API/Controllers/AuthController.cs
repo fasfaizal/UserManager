@@ -9,9 +9,12 @@ namespace UserManager.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUsersService _usersService;
-        public AuthController(IUsersService usersService)
+        private readonly IAuthService _authService;
+
+        public AuthController(IUsersService usersService, IAuthService authService)
         {
             _usersService = usersService;
+            _authService = authService;
         }
 
         /// <summary>
@@ -27,6 +30,20 @@ namespace UserManager.API.Controllers
         {
             await _usersService.CreateAsync(createUserRequest);
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        /// <summary>
+        /// Authenticates a user and returns a JWT token if successful.
+        /// </summary>
+        /// <param name="loginRequest">An object containing the user's login credentials (username and password).</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing a JSON object with the JWT token if authentication is successful.
+        /// </returns>
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest loginRequest)
+        {
+            var token = await _authService.AuthenticateAsync(loginRequest);
+            return Ok(new { token });
         }
     }
 }

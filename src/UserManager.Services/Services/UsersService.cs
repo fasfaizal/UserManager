@@ -37,7 +37,7 @@ namespace UserManager.Services.Services
                 throw new ArgumentNullException(nameof(userRequest));
             }
 
-            var user = await _usersRepo.GetByUsernameOrEmailAsync(userRequest.Username, userRequest.Email);
+            var user = await _usersRepo.GetByUsernameOrEmailAsync(userRequest.Username.Trim(), userRequest.Email.Trim());
             if (user != null)
             {
                 throw new ApiValidationException(HttpStatusCode.BadRequest, "Username or email already exists");
@@ -46,8 +46,8 @@ namespace UserManager.Services.Services
             var (passwordHash, passwordSalt) = _hashService.CreatePasswordHash(userRequest.Password);
             var newUser = new User
             {
-                Username = userRequest.Username,
-                Email = userRequest.Email,
+                Username = userRequest.Username.Trim(),
+                Email = userRequest.Email.Trim(),
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };
