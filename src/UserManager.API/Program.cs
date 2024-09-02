@@ -53,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler("/handle-error");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
