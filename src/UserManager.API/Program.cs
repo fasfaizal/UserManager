@@ -16,6 +16,7 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepo, UsersRepo>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserDetailsRepo, UserDetailsRepo>();
 
 //Add Db Context
 builder.Services.AddDBService(builder.Configuration.GetConnectionString("DbConnectionString"));

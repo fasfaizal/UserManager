@@ -3,6 +3,7 @@ using UserManager.Common.Exceptions;
 using UserManager.Common.Interfaces.Repos;
 using UserManager.Common.Interfaces.Services;
 using UserManager.Common.Models.Request;
+using UserManager.Common.Models.Response;
 using UserManager.Repo.Entities;
 
 namespace UserManager.Services.Services
@@ -11,11 +12,13 @@ namespace UserManager.Services.Services
     {
         private readonly IUsersRepo _usersRepo;
         private readonly IHashService _hashService;
+        private readonly IUserDetailsRepo _userDetailsRepo;
 
-        public UsersService(IUsersRepo usersRepo, IHashService hashService)
+        public UsersService(IUsersRepo usersRepo, IHashService hashService, IUserDetailsRepo userDetailsRepo)
         {
             _usersRepo = usersRepo;
             _hashService = hashService;
+            _userDetailsRepo = userDetailsRepo;
         }
 
         /// <summary>
@@ -52,6 +55,19 @@ namespace UserManager.Services.Services
                 PasswordSalt = passwordSalt
             };
             await _usersRepo.AddAsync(newUser);
+        }
+
+        /// <summary>
+        /// Retrieves the profile details of a user by their user ID.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose profile details are to be retrieved.</param>
+        /// <returns>
+        /// The task result contains a <see cref="UserDetailsResponse"/> object with the user's profile details.
+        /// </returns>
+        public async Task<UserDetailsResponse> GetUserProfileDetails(int userId)
+        {
+            var userDetails = await _userDetailsRepo.GetUserDetailsAsync(userId);
+            return new UserDetailsResponse(userDetails);
         }
     }
 }
