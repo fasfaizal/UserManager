@@ -67,7 +67,7 @@ namespace UserManager.Services.Services
             {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim("userId",user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_jwtConfig.Secret));
@@ -80,9 +80,7 @@ namespace UserManager.Services.Services
                     signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature)
                 );
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
