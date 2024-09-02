@@ -45,6 +45,7 @@ namespace UserManager.Services.Services
                 throw new ArgumentNullException(nameof(loginRequest));
             }
 
+            // Get user and verify password
             var user = await _usersRepo.GetAsync(u => u.Username == loginRequest.UsernameOrEmail || u.Email == loginRequest.UsernameOrEmail);
             if (user == null || !_hashService.VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
             {

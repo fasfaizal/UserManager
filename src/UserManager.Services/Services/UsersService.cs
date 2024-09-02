@@ -40,13 +40,17 @@ namespace UserManager.Services.Services
                 throw new ArgumentNullException(nameof(userRequest));
             }
 
+            // Check if username or email exists
             var user = await _usersRepo.GetAsync(u => u.Username == userRequest.Username || u.Email == userRequest.Email);
             if (user != null)
             {
                 throw new ApiValidationException(HttpStatusCode.BadRequest, "Username or email already exists");
             }
 
+            // Create password hash and salt
             var (passwordHash, passwordSalt) = _hashService.CreatePasswordHash(userRequest.Password);
+
+            // Add new user
             var newUser = new User
             {
                 Username = userRequest.Username.Trim(),
