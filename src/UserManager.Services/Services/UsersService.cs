@@ -70,6 +70,15 @@ namespace UserManager.Services.Services
             return new UserDetailsResponse(userDetails);
         }
 
+        /// <summary>
+        /// Updates the profile details of a user or adds new details if they do not exist.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose profile details are to be updated.</param>
+        /// <param name="userDetailsRequest">The object containing the updated profile details.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when <paramref name="userDetailsRequest"/> is null.
+        /// </exception>
         public async Task UpdateUserProfileDetails(int userId, UserDetailsRequest userDetailsRequest)
         {
             if (userDetailsRequest == null)

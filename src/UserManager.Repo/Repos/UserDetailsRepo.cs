@@ -26,12 +26,22 @@ namespace UserManager.Repo.Repos
             return await _dbContext.UserDetails.FirstOrDefaultAsync(o => o.UserId == userId);
         }
 
+        /// <summary>
+        /// Adds new user details to the database and saves the changes asynchronously.
+        /// </summary>
+        /// <param name="userDetails">The user details object to be added to the database.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+
         public async Task AddUserDetailsAsync(UserDetails userDetails)
         {
             await _dbContext.UserDetails.AddAsync(userDetails);
             await SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Saves all changes made in the current database context asynchronously.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous save operation.</returns>
         public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();

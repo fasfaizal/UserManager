@@ -23,8 +23,9 @@ namespace UserManager.API.Controllers
         /// <param name="createUserRequest">An object containing the details of the user to be created.</param>
         /// <returns>
         /// An <see cref="IActionResult"/> indicating the result of the registration process.
-        /// On success, returns a status code of 201 (Created).
         /// </returns>
+        /// <response code="200">Indicates that the user is successfully cretaed.</response>
+        /// <response code="400">Returns status code 400 if the request is invalid.</response>
         [HttpPost("register")]
         public async Task<IActionResult> Register(CreateUserRequest createUserRequest)
         {
@@ -39,6 +40,8 @@ namespace UserManager.API.Controllers
         /// <returns>
         /// An <see cref="IActionResult"/> containing a JSON object with the JWT token if authentication is successful.
         /// </returns>
+        /// <response code="200">Indicates that the login request was successful.</response>
+        /// <response code="400">Returns status code 400 if the request is invalid.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {

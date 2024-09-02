@@ -34,6 +34,16 @@ namespace UserManager.API.Controllers
             return Ok(userProfileDetails);
         }
 
+        /// <summary>
+        /// Updates the profile details of the currently authenticated user.
+        /// </summary>
+        /// <param name="userDetails">The updated user profile details.</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the update operation.
+        /// </returns>
+        /// <response code="200">Indicates that the user's profile details were successfully updated.</response>
+        /// <response code="400">Returns status code 400 if the request is invalid.</response>
+        /// <response code="401">Returns status code 401 if the user is not authenticated.</response>
         [HttpPut]
         public async Task<IActionResult> Put(UserDetailsRequest userDetails)
         {
