@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UserManager.Common.Interfaces.Services;
+using UserManager.Common.Models.Request;
 
 namespace UserManager.API.Controllers
 {
@@ -31,6 +32,14 @@ namespace UserManager.API.Controllers
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var userProfileDetails = await _usersService.GetUserProfileDetails(userId);
             return Ok(userProfileDetails);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(UserDetailsRequest userDetails)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            await _usersService.UpdateUserProfileDetails(userId, userDetails);
+            return Ok();
         }
     }
 }

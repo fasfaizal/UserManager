@@ -7,5 +7,6 @@ namespace UserManager.Common.Interfaces.Services
     {
         Task CreateAsync(CreateUserRequest userRequest);
         Task<UserDetailsResponse> GetUserProfileDetails(int userId);
+        Task UpdateUserProfileDetails(int userId, UserDetailsRequest userDetailsRequest);
     }
 }

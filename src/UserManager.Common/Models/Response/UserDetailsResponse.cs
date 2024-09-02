@@ -1,8 +1,9 @@
-﻿using UserManager.Repo.Entities;
+﻿using UserManager.Common.Models.Request;
+using UserManager.Repo.Entities;
 
 namespace UserManager.Common.Models.Response
 {
-    public class UserDetailsResponse
+    public class UserDetailsResponse : UserDetailsRequest
     {
         public UserDetailsResponse(UserDetails userDetails)
         {
@@ -12,12 +13,6 @@ namespace UserManager.Common.Models.Response
             Address = userDetails?.Address;
             DateOfBirth = userDetails?.DateOfBirth;
         }
-
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public DateTime? DateOfBirth { get; set; }
         public string FullName
         {
             get

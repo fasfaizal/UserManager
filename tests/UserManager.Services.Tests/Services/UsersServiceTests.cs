@@ -14,12 +14,14 @@ namespace UserManager.Services.Tests.Services
         private readonly UsersService _userService;
         private readonly Mock<IUsersRepo> _usersRepoMock;
         private readonly Mock<IHashService> _hashServiceMock;
+        private readonly Mock<IUserDetailsRepo> _userDetailsRepoMock;
 
         public UsersServiceTests()
         {
             _usersRepoMock = new Mock<IUsersRepo>();
             _hashServiceMock = new Mock<IHashService>();
-            _userService = new UsersService(_usersRepoMock.Object, _hashServiceMock.Object);
+            _userDetailsRepoMock = new Mock<IUserDetailsRepo>();
+            _userService = new UsersService(_usersRepoMock.Object, _hashServiceMock.Object, _userDetailsRepoMock.Object);
         }
 
         [Fact]

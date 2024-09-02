@@ -69,5 +69,38 @@ namespace UserManager.Services.Services
             var userDetails = await _userDetailsRepo.GetUserDetailsAsync(userId);
             return new UserDetailsResponse(userDetails);
         }
+
+        public async Task UpdateUserProfileDetails(int userId, UserDetailsRequest userDetailsRequest)
+        {
+            if (userDetailsRequest == null)
+            {
+                throw new ArgumentNullException(nameof(userDetailsRequest));
+            }
+
+            UserDetails userDetails = await _userDetailsRepo.GetUserDetailsAsync(userId);
+            if (userDetails == null)
+            {
+                userDetails = new UserDetails()
+                {
+                    UserId = userId,
+                    FirstName = userDetailsRequest.FirstName,
+                    LastName = userDetailsRequest.LastName,
+                    Phone = userDetailsRequest.Phone,
+                    Address = userDetailsRequest.Address,
+                    DateOfBirth = userDetailsRequest.DateOfBirth,
+                };
+                await _userDetailsRepo.AddUserDetailsAsync(userDetails);
+            }
+            else
+            {
+                userDetails.FirstName = userDetailsRequest.FirstName;
+                userDetails.LastName = userDetailsRequest.LastName;
+                userDetails.Phone = userDetailsRequest.Phone;
+                userDetails.Address = userDetailsRequest.Address;
+                userDetails.DateOfBirth = userDetailsRequest.DateOfBirth;
+                userDetails.UpdatedOn = DateTime.Now;
+                await _userDetailsRepo.SaveChangesAsync();
+            }
+        }
     }
 }

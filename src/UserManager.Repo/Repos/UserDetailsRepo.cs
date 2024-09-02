@@ -25,5 +25,16 @@ namespace UserManager.Repo.Repos
         {
             return await _dbContext.UserDetails.FirstOrDefaultAsync(o => o.UserId == userId);
         }
+
+        public async Task AddUserDetailsAsync(UserDetails userDetails)
+        {
+            await _dbContext.UserDetails.AddAsync(userDetails);
+            await SaveChangesAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
