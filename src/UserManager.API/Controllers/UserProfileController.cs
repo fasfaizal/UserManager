@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Mvc;
+using UserManager.API.BaseClasses;
 using UserManager.Common.Interfaces.Services;
 using UserManager.Common.Models.Request;
 
 namespace UserManager.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserProfileController : ControllerBase
+    public class UserProfileController : UserManagerControllerBase
     {
         private readonly IUsersService _usersService;
 
@@ -29,8 +27,7 @@ namespace UserManager.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var userProfileDetails = await _usersService.GetUserProfileDetails(userId);
+            var userProfileDetails = await _usersService.GetUserProfileDetails(UserManagerReqContext.UserId);
             return Ok(userProfileDetails);
         }
 
@@ -47,8 +44,7 @@ namespace UserManager.API.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(UserDetailsRequest userDetails)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _usersService.UpdateUserProfileDetails(userId, userDetails);
+            await _usersService.UpdateUserProfileDetails(UserManagerReqContext.UserId, userDetails);
             return Ok();
         }
     }
