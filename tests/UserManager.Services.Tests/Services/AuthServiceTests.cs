@@ -16,13 +16,13 @@ namespace UserManager.Services.Tests.Services
     public class AuthServiceTests
     {
         private readonly AuthService _authService;
-        private readonly Mock<IUsersRepo> _usersRepoMock;
+        private readonly Mock<IRepository<User>> _usersRepoMock;
         private readonly Mock<IHashService> _hashServiceMock;
         private readonly Mock<IOptions<JwtConfigurations>> _jwtConfigMock;
 
         public AuthServiceTests()
         {
-            _usersRepoMock = new Mock<IUsersRepo>();
+            _usersRepoMock = new Mock<IRepository<User>>();
             _hashServiceMock = new Mock<IHashService>();
             _jwtConfigMock = new Mock<IOptions<JwtConfigurations>>();
 
@@ -52,7 +52,7 @@ namespace UserManager.Services.Tests.Services
         {
             // Arrange
             var loginRequest = new LoginRequest { UsernameOrEmail = "user@example.com", Password = "password" };
-            _usersRepoMock.Setup(repo => repo.GetByUsernameOrEmailAsync(loginRequest.UsernameOrEmail, loginRequest.UsernameOrEmail))
+            _usersRepoMock.Setup(repo => repo.GetAsync(u => u.Username == loginRequest.UsernameOrEmail || u.Email == loginRequest.UsernameOrEmail))
                 .ReturnsAsync((User)null);
 
             // Act & Assert
@@ -74,7 +74,7 @@ namespace UserManager.Services.Tests.Services
                 PasswordSalt = new byte[] { 4, 5, 6 }
             };
 
-            _usersRepoMock.Setup(repo => repo.GetByUsernameOrEmailAsync(loginRequest.UsernameOrEmail, loginRequest.UsernameOrEmail))
+            _usersRepoMock.Setup(repo => repo.GetAsync(u => u.Username == loginRequest.UsernameOrEmail || u.Email == loginRequest.UsernameOrEmail))
                 .ReturnsAsync(user);
             _hashServiceMock.Setup(service => service.VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
                 .Returns(true);

@@ -12,15 +12,15 @@ namespace UserManager.Services.Tests.Services
     public class UsersServiceTests
     {
         private readonly UsersService _userService;
-        private readonly Mock<IUsersRepo> _usersRepoMock;
+        private readonly Mock<IRepository<User>> _usersRepoMock;
         private readonly Mock<IHashService> _hashServiceMock;
-        private readonly Mock<IUserDetailsRepo> _userDetailsRepoMock;
+        private readonly Mock<IRepository<UserDetails>> _userDetailsRepoMock;
 
         public UsersServiceTests()
         {
-            _usersRepoMock = new Mock<IUsersRepo>();
+            _usersRepoMock = new Mock<IRepository<User>>();
             _hashServiceMock = new Mock<IHashService>();
-            _userDetailsRepoMock = new Mock<IUserDetailsRepo>();
+            _userDetailsRepoMock = new Mock<IRepository<UserDetails>>();
             _userService = new UsersService(_usersRepoMock.Object, _hashServiceMock.Object, _userDetailsRepoMock.Object);
         }
 
@@ -41,7 +41,7 @@ namespace UserManager.Services.Tests.Services
             var userRequest = new CreateUserRequest { Username = "existingUser", Email = "existingEmail@example.com", Password = "password123" };
             var existingUser = new User { Username = "existingUser", Email = "existingEmail@example.com" };
 
-            _usersRepoMock.Setup(repo => repo.GetByUsernameOrEmailAsync(userRequest.Username, userRequest.Email))
+            _usersRepoMock.Setup(repo => repo.GetAsync(u => u.Username == userRequest.Username || u.Email == userRequest.Email))
                 .ReturnsAsync(existingUser);
 
             // Act & Assert
@@ -55,7 +55,7 @@ namespace UserManager.Services.Tests.Services
         {
             // Arrange
             var userRequest = new CreateUserRequest { Username = "newUser", Email = "newEmail@example.com", Password = "password123" };
-            _usersRepoMock.Setup(repo => repo.GetByUsernameOrEmailAsync(userRequest.Username, userRequest.Email))
+            _usersRepoMock.Setup(repo => repo.GetAsync(u => u.Username == userRequest.Username || u.Email == userRequest.Email))
                 .ReturnsAsync((User)null);
 
             var passwordHash = new byte[] { 1, 2, 3 };
@@ -63,13 +63,13 @@ namespace UserManager.Services.Tests.Services
             _hashServiceMock.Setup(service => service.CreatePasswordHash(userRequest.Password))
                 .Returns((passwordHash, passwordSalt));
 
-            _usersRepoMock.Setup(repo => repo.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
+            _usersRepoMock.Setup(repo => repo.CreateAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
 
             // Act
             await _userService.CreateAsync(userRequest);
 
             // Assert
-            _usersRepoMock.Verify(repo => repo.AddAsync(It.Is<User>(u =>
+            _usersRepoMock.Verify(repo => repo.CreateAsync(It.Is<User>(u =>
                 u.Username == userRequest.Username &&
                 u.Email == userRequest.Email &&
                 u.PasswordHash == passwordHash &&

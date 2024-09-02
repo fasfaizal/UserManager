@@ -10,11 +10,11 @@ namespace UserManager.Services.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly IUsersRepo _usersRepo;
+        private readonly IRepository<User> _usersRepo;
         private readonly IHashService _hashService;
-        private readonly IUserDetailsRepo _userDetailsRepo;
+        private readonly IRepository<UserDetails> _userDetailsRepo;
 
-        public UsersService(IUsersRepo usersRepo, IHashService hashService, IUserDetailsRepo userDetailsRepo)
+        public UsersService(IRepository<User> usersRepo, IHashService hashService, IRepository<UserDetails> userDetailsRepo)
         {
             _usersRepo = usersRepo;
             _hashService = hashService;
@@ -40,7 +40,7 @@ namespace UserManager.Services.Services
                 throw new ArgumentNullException(nameof(userRequest));
             }
 
-            var user = await _usersRepo.GetByUsernameOrEmailAsync(userRequest.Username.Trim(), userRequest.Email.Trim());
+            var user = await _usersRepo.GetAsync(u => u.Username == userRequest.Username || u.Email == userRequest.Email);
             if (user != null)
             {
                 throw new ApiValidationException(HttpStatusCode.BadRequest, "Username or email already exists");
@@ -54,7 +54,7 @@ namespace UserManager.Services.Services
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };
-            await _usersRepo.AddAsync(newUser);
+            await _usersRepo.CreateAsync(newUser);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace UserManager.Services.Services
         /// </returns>
         public async Task<UserDetailsResponse> GetUserProfileDetails(int userId)
         {
-            var userDetails = await _userDetailsRepo.GetUserDetailsAsync(userId);
+            var userDetails = await _userDetailsRepo.GetAsync(o => o.UserId == userId);
             return new UserDetailsResponse(userDetails);
         }
 
@@ -86,30 +86,16 @@ namespace UserManager.Services.Services
                 throw new ArgumentNullException(nameof(userDetailsRequest));
             }
 
-            UserDetails userDetails = await _userDetailsRepo.GetUserDetailsAsync(userId);
-            if (userDetails == null)
+            var userDetails = new UserDetails()
             {
-                userDetails = new UserDetails()
-                {
-                    UserId = userId,
-                    FirstName = userDetailsRequest.FirstName,
-                    LastName = userDetailsRequest.LastName,
-                    Phone = userDetailsRequest.Phone,
-                    Address = userDetailsRequest.Address,
-                    DateOfBirth = userDetailsRequest.DateOfBirth,
-                };
-                await _userDetailsRepo.AddUserDetailsAsync(userDetails);
-            }
-            else
-            {
-                userDetails.FirstName = userDetailsRequest.FirstName;
-                userDetails.LastName = userDetailsRequest.LastName;
-                userDetails.Phone = userDetailsRequest.Phone;
-                userDetails.Address = userDetailsRequest.Address;
-                userDetails.DateOfBirth = userDetailsRequest.DateOfBirth;
-                userDetails.UpdatedOn = DateTime.Now;
-                await _userDetailsRepo.SaveChangesAsync();
-            }
+                UserId = userId,
+                FirstName = userDetailsRequest.FirstName,
+                LastName = userDetailsRequest.LastName,
+                Phone = userDetailsRequest.Phone,
+                Address = userDetailsRequest.Address,
+                DateOfBirth = userDetailsRequest.DateOfBirth,
+            };
+            await _userDetailsRepo.CreateOrUpdateAsync(userDetails, o => o.UserId == userId);
         }
     }
 }

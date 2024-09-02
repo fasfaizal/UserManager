@@ -14,11 +14,11 @@ namespace UserManager.Services.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUsersRepo _usersRepo;
+        private readonly IRepository<User> _usersRepo;
         private readonly IHashService _hashService;
         private readonly JwtConfigurations _jwtConfig;
 
-        public AuthService(IUsersRepo usersRepo, IHashService hashService, IOptions<JwtConfigurations> config)
+        public AuthService(IRepository<User> usersRepo, IHashService hashService, IOptions<JwtConfigurations> config)
         {
             _usersRepo = usersRepo;
             _hashService = hashService;
@@ -45,7 +45,7 @@ namespace UserManager.Services.Services
                 throw new ArgumentNullException(nameof(loginRequest));
             }
 
-            var user = await _usersRepo.GetByUsernameOrEmailAsync(loginRequest.UsernameOrEmail, loginRequest.UsernameOrEmail);
+            var user = await _usersRepo.GetAsync(u => u.Username == loginRequest.UsernameOrEmail || u.Email == loginRequest.UsernameOrEmail);
             if (user == null || !_hashService.VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
             {
                 throw new ApiValidationException(HttpStatusCode.Unauthorized, "Invalid username or password");

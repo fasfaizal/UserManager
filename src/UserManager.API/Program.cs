@@ -13,10 +13,9 @@ var config = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IUsersRepo, UsersRepo>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserDetailsRepo, UserDetailsRepo>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 //Add Db Context
 builder.Services.AddDBService(builder.Configuration.GetConnectionString("DbConnectionString"));
