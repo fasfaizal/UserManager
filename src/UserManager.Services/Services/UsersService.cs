@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using UserManager.Common.Exceptions;
+using UserManager.Common.Extensions;
 using UserManager.Common.Interfaces.Repos;
 using UserManager.Common.Interfaces.Services;
 using UserManager.Common.Models.Request;
@@ -53,8 +54,8 @@ namespace UserManager.Services.Services
             // Add new user
             var newUser = new User
             {
-                Username = userRequest.Username.Trim(),
-                Email = userRequest.Email.Trim(),
+                Username = userRequest.Username.SanitizeAndTrim(),
+                Email = userRequest.Email.SanitizeAndTrim(),
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
             };
@@ -93,10 +94,10 @@ namespace UserManager.Services.Services
             var userDetails = new UserDetails()
             {
                 UserId = userId,
-                FirstName = userDetailsRequest.FirstName,
-                LastName = userDetailsRequest.LastName,
-                Phone = userDetailsRequest.Phone,
-                Address = userDetailsRequest.Address,
+                FirstName = userDetailsRequest.FirstName.SanitizeAndTrim(),
+                LastName = userDetailsRequest.LastName.SanitizeAndTrim(),
+                Phone = userDetailsRequest.Phone.SanitizeAndTrim(),
+                Address = userDetailsRequest.Address.SanitizeAndTrim(),
                 DateOfBirth = userDetailsRequest.DateOfBirth,
             };
             await _userDetailsRepo.CreateOrUpdateAsync(userDetails, o => o.UserId == userId);
